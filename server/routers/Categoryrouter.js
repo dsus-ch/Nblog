@@ -1,12 +1,16 @@
 const express = require('express')
-const router =express.Router()
-const {genid, _query} = require("../db/DBUtils")
+const router = express.Router()
+const  _query = require("../until/DBUtils")
+const GenId = require("../until/idgenerator")
+//雪花id
+const genid = new GenId({ WorkerId: 1 })
+
 
 
 
 const category_sql ={
-    query:"SELECT * FROM category WHERE name = ?",
     query_all:"SELECT * FROM category",
+    query:"SELECT * FROM category WHERE name = ?",
     insert:"INSERT INTO category (id,name) VALUES(?,?)",
     update:"UPDATE category SET name = ? WHERE id = ?",
     delete:"DELETE FROM category WHERE id = ?"
@@ -19,7 +23,7 @@ const category_sql ={
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.get('/token/list',async (req,res)=>{
+router.get('/list',async (req,res)=>{
     const body =  await _query(category_sql.query_all,[])
     const [rows,fields] = body//TODO rows为什么只有一条数据
     if(rows&&Object.keys(rows).length>0){
@@ -44,7 +48,7 @@ router.get('/token/list',async (req,res)=>{
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.post('/token/add',async (req,res)=>{
+router.post('/add',async (req,res)=>{
     const {name} = req.body
     //判断有没有重复的name
     const [rows, fields] =await _query(category_sql.query,[name])
@@ -78,7 +82,7 @@ router.post('/token/add',async (req,res)=>{
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.put('/token/update',async (req,res)=>{
+router.put('/update',async (req,res)=>{
     const {name,id} = req.body
     const result = await _query(category_sql.update,[name,id])
     if(result.affectedRows>0){//没有变动代表更新不成功
@@ -102,7 +106,7 @@ router.put('/token/update',async (req,res)=>{
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.delete('/token/delete',async (req,res)=>{
+router.delete('/delete',async (req,res)=>{
     const id = req.query.id
     const result = await _query(category_sql.delete,[id])
 

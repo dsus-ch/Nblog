@@ -1,12 +1,15 @@
 const express = require('express')
 const router =express.Router()
-const {genid, _query} = require("../db/DBUtils")
+const  _query = require("../until/DBUtils")
+const GenId = require("../until/idgenerator")
+//雪花id
+const genid = new GenId({ WorkerId: 1 })
 
 
 
 const blog_sql ={
     query_all:"SELECT * FROM  blog",
-    query_count:"SELECT COUNT(*) FROM blog",
+    query:"SELECT COUNT(*) FROM blog",
     insert:"INSERT INTO blog (id,category_id,title,content,create_time) VALUES(?,?,?,?,?)",
     update:"UPDATE blog SET category_id = ?,title = ?,content = ? WHERE id = ?",
     delete:"DELETE FROM blog WHERE id = ?"
@@ -19,7 +22,7 @@ const blog_sql ={
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.get('/token/search',async (req,res)=>{
+router.get('/search',async (req,res)=>{
 
     /**
      * keyword —— 模糊查询
@@ -29,8 +32,11 @@ router.get('/token/search',async (req,res)=>{
      * 页码 page
      * 分页大小 pageSize
      */
-    let {keyword,category_id,page,pageSize} =  req.query
 
+    console.log(req.auth)//解析jwt的内容默认在req.auth属性
+
+    let {keyword,category_id,page,pageSize} =  req.query
+    
     keyword ??=""
     category_id ??=0
     page ??= 1//为空则从第一页开始
@@ -49,7 +55,7 @@ router.get('/token/search',async (req,res)=>{
         params.push(`%${keyword}%`)
     }
     let query_sql = blog_sql.query_all
-    let searchCountSql = blog_sql.query_count
+    let searchCountSql = blog_sql.query
     if(conditions.length>0){//说明条件拼装上去了
         query_sql+=" WHERE" + conditions.join("AND")
         searchCountSql +=" WHERE" + conditions.join("AND")
@@ -61,13 +67,11 @@ router.get('/token/search',async (req,res)=>{
     query_sql+=" ORDER BY create_time DESC LIMIT ?,? "
     params.push((page-1)*pageSize)
     params.push(pageSize)
-    console.log({query_sql,searchCountSql})
     
     //查询博客
     const searchResult = await _query(query_sql,params)
     //查询数据总数
     const countResult = await _query(searchCountSql,searchCountParams)
-    console.log({searchResult,countResult})
 
     if(searchResult&&countResult&&searchResult.length>0&&countResult.length>0){
         res.send({
@@ -79,7 +83,7 @@ router.get('/token/search',async (req,res)=>{
                 page,
                 pageSize,
                 rows:searchResult,
-                count:countResult[0]['COUNT(*)']
+                count:countResult[0]['COUNT(*)'],
             }
         })
     }else{
@@ -100,7 +104,7 @@ router.get('/token/search',async (req,res)=>{
  * @param {Function} 函数 
  */
 
-router.post('/token/add',async (req,res)=>{
+router.post('/add',async (req,res)=>{
     const {category_id,title,content} = req.body
     let id = genid.NextId()
     let create_time = new Date().getTime()
@@ -127,7 +131,7 @@ router.post('/token/add',async (req,res)=>{
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.put('/token/update',async (req,res)=>{
+router.put('/update',async (req,res)=>{
     const {id,title,category_id,content} = req.body
     const result = await _query(blog_sql.update,[category_id,title,content,id])
     if(result.affectedRows>0){//没有变动代表更新不成功
@@ -151,7 +155,7 @@ router.put('/token/update',async (req,res)=>{
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.delete('/token/delete',async (req,res)=>{
+router.delete('/delete',async (req,res)=>{
     const id = req.query.id
     const result = await _query(blog_sql.delete,[id])
 
