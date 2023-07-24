@@ -49,33 +49,24 @@ const myFetch = async () => {
     cache: "no-cache",//禁用缓存
   })
   const response = await fetch(request)
-  // console.log(response.body)
-  // console.log(response)
-  if (response.ok) {
-    console.log("The network request is successful!")
-  } else {
-    console.log("The network request failed!")
-  }
 
   //将可读流转换成文本流
-  const reader = response.body?.
+  const reader = await response.body?.
     pipeThrough(new TextDecoderStream).
-    getReader()
+    getReader().
+    read()
 
-  const result = await reader?.read()
-  console.log(result?.value)
-  if (result?.value && JSON.parse(result.value).code == 200) {
+  const result = JSON.parse(reader?.value!)
+  
+  if (response.ok && result.code == 200) {
     ; (() => {
       ElMessage({
         message: 'Landing successful.',
         type: 'success',
       })
     })()
-    //改变状态
-    const data = JSON.parse(result.value)['data']
+    
     store.$patch({
-      id: data['id'],
-      account: data['account'],
       token: data['token'],
     })
     //重定向
