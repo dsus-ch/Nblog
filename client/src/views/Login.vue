@@ -2,12 +2,10 @@
 import { reactive, ref } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
-import { useRouter, useRoute } from 'vue-router';
-import { useAdminStore } from '../store/Admin'
+import { useRouter } from 'vue-router'
+import useMyFetch from '../hooks/useMyFetch'
 
 const router = useRouter()
-const route = useRoute()
-const store = useAdminStore()
 const formSize = ref('default')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive({
@@ -32,14 +30,12 @@ const rules = reactive<FormRules>({
   ],
 })
 
-const SERVER_BASE_URL = "http://localhost:8080"
-//封装自己的useFetch
-const myFetch = async () => {
+const getRequestInit = () =>{
   const data = {
     account: `${ruleForm.name}`,
     password: `${ruleForm.password}`
   }
-  const request = new Request(SERVER_BASE_URL + "/admin/login", {
+  return {
     method: "POST",
     headers: {
       'content-type': 'application/json'
@@ -47,39 +43,28 @@ const myFetch = async () => {
     },
     body: JSON.stringify(data),
     cache: "no-cache",//禁用缓存
-  })
-  const response = await fetch(request)
-
-  //将可读流转换成文本流
-  const reader = await response.body?.
-    pipeThrough(new TextDecoderStream).
-    getReader().
-    read()
-
-  const result = JSON.parse(reader?.value!)
-  
-  if (response.ok && result.code == 200) {
-    ; (() => {
-      ElMessage({
-        message: 'Landing successful.',
-        type: 'success',
-      })
-    })()
-    
-    store.$patch({
-      token: data['token'],
-    })
-    //重定向
-    router.push("/control-panel")
-  } else {
-    ; (() => {
-      ElMessage({
-        message: 'Login Failure Warning.',
-        type: 'warning',
-      })
-    })()
   }
 }
+
+const errorHandle = (result:any) =>{
+  ElMessage({
+        message: 'Login Failure Warning.',
+        type: 'warning',
+  })
+}
+
+const successHandle = (result:any) =>{
+  ElMessage({
+        message: 'Landing successful.',
+        type: 'success',
+  })
+  //TODO 状态管理
+  console.log(result)
+  //重定向
+  router.push("/control-panel")
+}
+
+
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   //逻辑校验
@@ -88,7 +73,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (valid) {
       console.log('submit!')
       //成功则进行请求
-      myFetch()
+      // myFetch()
+      useMyFetch("/admin/login",getRequestInit,errorHandle,successHandle)
     } else {
       console.log('error submit!', fields)
     }

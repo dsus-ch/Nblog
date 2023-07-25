@@ -1,7 +1,4 @@
 <script setup>
-import { useRouter, useRoute } from 'vue-router'
-import { useAdminStore } from '../../store/Admin'
-import { ref } from 'vue'
 import {
   Menu as IconMenu,
   Location,
@@ -14,11 +11,6 @@ const handleOpen = (key, keyPath) => {
 const handleClose = (key, keyPath) => {
   console.log(key, keyPath)
 }
-
-const tabPosition = ref('left')
-const router = useRouter()
-const route = useRoute()
-const store = useAdminStore()
 </script>
   
 
@@ -47,12 +39,12 @@ const store = useAdminStore()
 
           </el-sub-menu>
 
-          <el-menu-item index="/category">
+          <el-menu-item index="/article">
             <el-icon><icon-menu /></el-icon>
             <span>文章管理</span>
           </el-menu-item>
 
-          <el-menu-item index="/article">
+          <el-menu-item index="/category">
             <el-icon><setting /></el-icon>
             <span>分类管理</span>
           </el-menu-item>
