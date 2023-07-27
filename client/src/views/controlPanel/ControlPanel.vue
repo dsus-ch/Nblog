@@ -4,7 +4,8 @@ import {
   Location,
   Setting,
 } from '@element-plus/icons-vue'
-import { ElContainer } from 'element-plus';
+import { ElContainer } from 'element-plus'
+
 const handleOpen = (key, keyPath) => {
   console.log(key, keyPath)
 }
@@ -60,4 +61,5 @@ const handleClose = (key, keyPath) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

@@ -1,11 +1,10 @@
 import { defineStore } from "pinia" // 定义容器
 
-export const useAdminStore = defineStore('admin', {
+export const useMain = defineStore('main', {
   state: () => {
     return {
-        id:0,
-        account:"",
-        token:""
+      token:"",
+      categoryList:[]
     }
   },
   /**

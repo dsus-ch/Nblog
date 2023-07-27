@@ -1,39 +1,42 @@
-<script lang="ts" setup>
+<script setup>
 import { reactive, ref } from 'vue'
-import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import useMyFetch from '../hooks/useMyFetch'
+import { useMain } from "@/store/main"
+import useMyFetch from '@/hooks/useMyFetch'
 
 const router = useRouter()
 const formSize = ref('default')
-const ruleFormRef = ref<FormInstance>()
-const ruleForm = reactive({
-  name: '输入姓名',
-  password: "输入密码",
-  email: "输入邮箱",
+const FormRef = ref()
+const store = useMain() 
+const FormData = reactive({
+  name: '',
+  email: '',
+  password: '',
 })
 
 //规则验证
-const rules = reactive<FormRules>({
+const rules = reactive({
   name: [
     { required: true, message: 'Please input Activity name', trigger: 'blur' },
     { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
+  ],
+  email: [
+    { required: true, message: 'Please select Activity zone', trigger: 'blur' },
+    { min: 3, max: 12, message: 'Length should be 6 to 12', trigger: 'blur' },
   ],
   password: [
     { required: true, message: 'Please select Activity zone', trigger: 'blur' },
     { min: 6, max: 12, message: 'Length should be 6 to 12', trigger: 'blur' },
   ],
-  email: [
-    { required: true, message: 'Please select Activity zone', trigger: 'blur' },
-    { min: 6, max: 12, message: 'Length should be 6 to 12', trigger: 'blur' },
-  ],
 })
 
+
 const getRequestInit = () =>{
+  //表单提交数据
   const data = {
-    account: `${ruleForm.name}`,
-    password: `${ruleForm.password}`
+      account: `${FormData.email}`,
+      password: `${FormData.password}`
   }
   return {
     method: "POST",
@@ -46,34 +49,33 @@ const getRequestInit = () =>{
   }
 }
 
-const errorHandle = (result:any) =>{
+const errorHandle = (result) =>{
   ElMessage({
         message: 'Login Failure Warning.',
         type: 'warning',
   })
 }
 
-const successHandle = (result:any) =>{
+const successHandle = (result) =>{
   ElMessage({
         message: 'Landing successful.',
         type: 'success',
   })
-  //TODO 状态管理
-  console.log(result)
+  //token状态持久化
+  store.token = "Bearer " + result.token
   //重定向
   router.push("/control-panel")
 }
 
 
 
-const submitForm = async (formEl: FormInstance | undefined) => {
+const submitForm = async (formEl) => {
   //逻辑校验
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
       console.log('submit!')
       //成功则进行请求
-      // myFetch()
       useMyFetch("/admin/login",getRequestInit,errorHandle,successHandle)
     } else {
       console.log('error submit!', fields)
@@ -81,7 +83,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   })
 }
 
-const resetForm = (formEl: FormInstance | undefined) => {
+const resetForm = (formEl) => {
   if (!formEl) return
   formEl.resetFields()
 }
@@ -98,22 +100,31 @@ const resetForm = (formEl: FormInstance | undefined) => {
       </div>
     </template>
     <div>
-      <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-position="left" label-width="120px"
-        :size="formSize" status-icon>
+      <el-form ref="FormRef" 
+        :model="FormData" 
+        :size="formSize"
+        :rules="rules" 
+        label-position="left" 
+        label-width="120px"
+        status-icon
+        >
+
         <el-form-item label="name" prop="name">
-          <el-input v-model="ruleForm.name" />
-        </el-form-item>
-        <el-form-item label="password" prop="password">
-          <el-input v-model="ruleForm.password" />
+          <el-input v-model="FormData.name"></el-input>
         </el-form-item>
         <el-form-item label="email" prop="email">
-          <el-input v-model="ruleForm.email" />
+          <el-input v-model="FormData.email"></el-input>
         </el-form-item>
+        <el-form-item label="password" prop="password">
+          <el-input v-model="FormData.password"></el-input>
+        </el-form-item>
+
+
         <el-form-item>
-          <el-button type="primary" :plain="true" @click="submitForm(ruleFormRef)">
+          <el-button type="primary" :plain="true" @click="submitForm(FormRef)">
             Create
           </el-button>
-          <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+          <el-button @click="resetForm(FormRef)">Reset</el-button>
         </el-form-item>
       </el-form>
     </div>
