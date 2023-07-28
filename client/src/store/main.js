@@ -1,9 +1,8 @@
-import { defineStore } from "pinia" // 定义容器
+import { defineStore } from "pinia"
 
 export const useMain = defineStore('main', {
   state: () => {
     return {
-      token:"",
       categoryList:[]
     }
   },

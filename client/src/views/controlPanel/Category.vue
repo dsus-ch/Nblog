@@ -5,6 +5,7 @@ import useMyFetch from '@/hooks/useMyFetch'
 
 
 const dataList = ref([])
+const token = localStorage.getItem('token')
 const store = useMain()
 
 const getRequestInit = () =>{
@@ -12,7 +13,7 @@ const getRequestInit = () =>{
         method: "GET",
         headers: {
             'content-type': 'application/json',
-            Authorization: store.token
+            Authorization: token
         },
         cache: "no-cache",
         mode:'cors',//跨域

@@ -2,13 +2,11 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import { useMain } from "@/store/main"
 import useMyFetch from '@/hooks/useMyFetch'
 
 const router = useRouter()
 const formSize = ref('default')
 const FormRef = ref()
-const store = useMain() 
 const FormData = reactive({
   name: '',
   email: '',
@@ -62,9 +60,9 @@ const successHandle = (result) =>{
         type: 'success',
   })
   //token状态持久化
-  store.token = "Bearer " + result.token
+  localStorage.setItem('token', 'Bearer ' + result.token)
   //重定向
-  router.push("/control-panel")
+  router.push('/control-panel')
 }
 
 
