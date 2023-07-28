@@ -5,30 +5,32 @@ import useMyFetch from '@/hooks/useMyFetch'
 
 
 const dataList = ref([])
-const token = localStorage.getItem('token')
 const store = useMain()
+const token = localStorage.getItem('token')
+const categoryList = store.categotyList
 
-const getRequestInit = () =>{
-    return {
-        method: "GET",
-        headers: {
-            'content-type': 'application/json',
-            Authorization: token
-        },
-        cache: "no-cache",
-        mode:'cors',//跨域
-    }
+
+const getArticleList = () =>{
+
+	if(!categoryList){
+	//定死的，不用拆开写
+	useMyFetch("/category/list",() => {
+		return{
+			method: "GET",
+			headers: {
+					'content-type': 'application/json',
+					Authorization: token,
+			},
+			cache: "no-cache",
+			mode:'cors',
+		}
+	},(result) => {} , (result) =>{
+			dataList.value = result.body
+			store.categoryList = result.body
+		})
+	}
 }
-
-const errorHandle = (result) =>{
-
-}
-const successHandle = (result) =>{
-    console.log(store.categoryList)
-    dataList.value = result.body
-}
-
-useMyFetch("/category/list",getRequestInit,errorHandle,successHandle)
+getArticleList()//进入页面执行
 
 const updateColumn = ()=>{
 

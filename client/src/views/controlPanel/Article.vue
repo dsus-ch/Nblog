@@ -7,32 +7,55 @@ import  RichEdit from "@/components/RichEdit.vue"
 
 const store = useMain()
 const token = localStorage.getItem('token')
+const categoryList = store.categoryList
 const activeName = ref('first')
 const dataList = ref([])
+const title = ref('')
 
+const getArticleList = () =>{
+  const getRequestInit = () =>{
+    return {
+      method: "GET",
+      headers: {
+        'content-type': 'application/json',
+        Authorization: token,
+      },
+      cache: "no-cache",
+      mode:'cors',//跨域
+    }
+  }
 
-const getRequestInit = () =>{
-  return {
-    method: "GET",
-    headers: {
-      'content-type': 'application/json',
-      Authorization: token,
-    },
-    cache: "no-cache",
-    mode:'cors',//跨域
+  const errorHandle = (result) =>{
+
+  }
+
+  const successHandle = (result) =>{
+    dataList.value = result.data.rows
+  }
+
+  useMyFetch("/blog/search",getRequestInit,errorHandle,successHandle)
+
+  if(!categoryList){
+    //定死的，不用拆开写
+    useMyFetch("/category/list",() => {
+      return{
+        method: "GET",
+        headers: {
+          'content-type': 'application/json',
+          Authorization: token,
+        },
+        cache: "no-cache",
+        mode:'cors',
+      }
+    },(result) => {} , (result) =>{
+      store.categoryList = result.body
+    })
   }
 }
+getArticleList()//进入页面执行
 
-const errorHandle = (result) =>{
 
-}
-const successHandle = (result) =>{
-  dataList.value = result.data.rows
-}
-
-useMyFetch("/blog/search",getRequestInit,errorHandle,successHandle)
-
-const updateColumn = () =>{
+const updateArticle = () =>{
   const getRequestInit = () =>{
     return {
       method: "PUT",
@@ -48,6 +71,7 @@ const updateColumn = () =>{
   const errorHandle = (result) =>{
 
   }
+
   const successHandle = (result) =>{
     dataList.value = result.data.rows
   }
@@ -55,7 +79,7 @@ const updateColumn = () =>{
   useMyFetch("/blog/update",getRequestInit,errorHandle,successHandle)
 }
 
-const deleteColumn = () =>{
+const deleteArticle = () =>{
     const getRequestInit = () =>{
       return {
         method: "DELETE",
@@ -71,52 +95,58 @@ const deleteColumn = () =>{
   const errorHandle = (result) =>{
 
   }
+
   const successHandle = (result) =>{
     dataList.value = result.data.rows
   }
 
   useMyFetch("/blog/delete",getRequestInit,errorHandle,successHandle)
 }
-
 </script>
 
 
 <template>
     <!-- 实现个人文章统计 发表文章 阅读量等 -->
-    <el-tabs v-model="activeName" class="tabs">
-      <el-tab-pane label="我的文章" name="first">
-        <el-carousel
-          height="400px"
-          direction="vertical"
-          type="card"
-          :autoplay="false"
-        >
-          <el-carousel-item
-            :key="index"
-            v-for="(item, index) in dataList"
-          >
-            <h1>{{ item.title }}</h1>
-            <div >
-              <el-space wrap>
-                <el-tag size="large">创建时间： {{ item.create_time }}</el-tag>
-                <el-tag class="ml-2" type="success" size="large">分类： {{ item.category_id }}</el-tag>
-                <el-tag class="ml-2" type="danger" size="large">文章ID： {{ item.id }}</el-tag>
-              </el-space>
+<el-tabs v-model="activeName" class="tabs">
+  <el-tab-pane label="我的文章" name="first">
+    <el-carousel
+      height="400px"
+      direction="vertical"
+      type="card"
+      :autoplay="false"
+    >
+      <el-carousel-item
+        :key="index"
+        v-for="(item, index) in dataList"
+      >
+        <h1>{{ item.title }}</h1>
+        <div >
+          <el-space wrap>
+            <el-tag size="large">创建时间： {{ item.create_time }}</el-tag>
+            <div v-if="categoryList[index]">
+              <el-tag class="ml-2" type="success" size="large">分类： {{ categoryList[index].name }}</el-tag>
             </div>
-            <div>
-              {{ item.content }}
-            </div>
-          </el-carousel-item>
-        </el-carousel>
-    </el-tab-pane>
+            <el-tag class="ml-2" type="danger" size="large">文章ID： {{ item.id }}</el-tag>
+          </el-space>
+        </div>
+        
+        <div>
+          {{ item.content }}
+        </div>
+      </el-carousel-item>
+    </el-carousel>
+  </el-tab-pane>
 
-    <el-tab-pane label="发表文章" name="add">
-      <RichEdit />
-      <el-button>添加</el-button>
-    </el-tab-pane>
+<el-tab-pane label="发表文章" name="add">
+  <el-space wrap>
+    <el-input v-model="title" placeholder="请输入标题"></el-input>
+    <RichEdit />
+    <el-button>发表</el-button>
+  </el-space>
+</el-tab-pane>
 
-    <el-tab-pane label="文章统计" name="census">census</el-tab-pane>
-  </el-tabs>
+<el-tab-pane label="文章统计" name="census">census</el-tab-pane>
+</el-tabs>
 </template>
 
 
@@ -140,6 +170,7 @@ const deleteColumn = () =>{
 .el-carousel__item:nth-child(2n + 1) {
   background-color: #c9e2ff;
 }
+
 </style>
 
 
