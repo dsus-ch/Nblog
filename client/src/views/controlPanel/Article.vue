@@ -35,19 +35,11 @@ const getArticleList = () =>{
 
   useMyFetch("/blog/search",getRequestInit,errorHandle,successHandle)
 
-  if(!categoryList){
+  if(categoryList === []){
     //定死的，不用拆开写
-    useMyFetch("/category/list",() => {
-      return{
-        method: "GET",
-        headers: {
-          'content-type': 'application/json',
-          Authorization: token,
-        },
-        cache: "no-cache",
-        mode:'cors',
-      }
-    },(result) => {} , (result) =>{
+    useMyFetch("/category/list",getRequestInit,
+    (result) => {} , 
+    (result) =>{
       store.categoryList = result.body
     })
   }
