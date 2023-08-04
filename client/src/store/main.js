@@ -16,7 +16,9 @@ export const useMain = defineStore('main', {
    * 编辑业务逻辑  类似于methods
    */
   actions: {
-
+    changeState(params){
+      this.categoryList = params
+    }
   }
 
 })

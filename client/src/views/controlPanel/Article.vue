@@ -7,12 +7,11 @@ import  RichEdit from "@/components/RichEdit.vue"
 
 const store = useMain()
 const token = localStorage.getItem('token')
-const categoryList = store.categoryList
 const activeName = ref('first')
 const dataList = ref([])
 const title = ref('')
 
-const getArticleList = () =>{
+const getArticleList = async () =>{
   const getRequestInit = () =>{
     return {
       method: "GET",
@@ -25,6 +24,15 @@ const getArticleList = () =>{
     }
   }
 
+  if(store.categoryList.length == 0){
+    //定死的，不用拆开写
+    await useMyFetch("/category/list",getRequestInit,
+    (result) => {} , 
+    (result) =>{
+      store.changeState(result.body)
+    })
+  }
+
   const errorHandle = (result) =>{
 
   }
@@ -33,16 +41,7 @@ const getArticleList = () =>{
     dataList.value = result.data.rows
   }
 
-  useMyFetch("/blog/search",getRequestInit,errorHandle,successHandle)
-
-  if(categoryList === []){
-    //定死的，不用拆开写
-    useMyFetch("/category/list",getRequestInit,
-    (result) => {} , 
-    (result) =>{
-      store.categoryList = result.body
-    })
-  }
+  await useMyFetch("/blog/search",getRequestInit,errorHandle,successHandle)
 }
 getArticleList()//进入页面执行
 
@@ -115,8 +114,8 @@ const deleteArticle = () =>{
         <div >
           <el-space wrap>
             <el-tag size="large">创建时间： {{ item.create_time }}</el-tag>
-            <div v-if="categoryList[index]">
-              <el-tag class="ml-2" type="success" size="large">分类： {{ categoryList[index].name }}</el-tag>
+            <div v-if="store.categoryList[index]">
+              <el-tag class="ml-2" type="success" size="large">分类： {{ store.categoryList[index].name }}</el-tag>
             </div>
             <el-tag class="ml-2" type="danger" size="large">文章ID： {{ item.id }}</el-tag>
           </el-space>
@@ -130,11 +129,9 @@ const deleteArticle = () =>{
   </el-tab-pane>
 
 <el-tab-pane label="发表文章" name="add">
-  <el-space wrap>
-    <el-input v-model="title" placeholder="请输入标题"></el-input>
-    <RichEdit />
-    <el-button>发表</el-button>
-  </el-space>
+  <el-input v-model="title" placeholder="请输入标题" class="batten"></el-input>
+  <RichEdit />
+  <el-button class="batten">发表</el-button>
 </el-tab-pane>
 
 <el-tab-pane label="文章统计" name="census">census</el-tab-pane>
@@ -162,7 +159,10 @@ const deleteArticle = () =>{
 .el-carousel__item:nth-child(2n + 1) {
   background-color: #c9e2ff;
 }
-
+.batten{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 </style>
 
 

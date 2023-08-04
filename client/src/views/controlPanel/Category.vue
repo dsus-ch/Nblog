@@ -1,64 +1,106 @@
 <script setup>
-import { ref } from 'vue'
+import { reactive } from 'vue'
 import { useMain } from "@/store/main"
 import useMyFetch from '@/hooks/useMyFetch'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
-
-const dataList = ref([])
+const dataList = reactive([])
 const store = useMain()
 const token = localStorage.getItem('token')
-const categoryList = store.categotyList
 
 
-const getArticleList = () =>{
+const getArticleList = () => {
+  if (store.categoryList.length == 0) {
+    //定死的，不用拆开写
+    useMyFetch("/category/list", () => {
+      return {
+        method: "GET",
+        headers: {
+          'content-type': 'application/json',
+          Authorization: token,
+        },
+        cache: "no-cache",
+        mode: 'cors',
+      }
+    }, (result) => {}, (result) => {
+      store.changeState(result.body)
+    })
+  }
 
-	if(!categoryList){
-	//定死的，不用拆开写
-	useMyFetch("/category/list",() => {
-		return{
-			method: "GET",
-			headers: {
-					'content-type': 'application/json',
-					Authorization: token,
-			},
-			cache: "no-cache",
-			mode:'cors',
-		}
-	},(result) => {} , (result) =>{
-			dataList.value = result.body
-			store.categoryList = result.body
-		})
-	}
+  store.categoryList.forEach( element => {
+    dataList.push(element)
+  })
 }
 getArticleList()//进入页面执行
 
-const updateColumn = ()=>{
+const updateColumn = ( id,index ) => {
+  ElMessageBox.prompt('请输入修改后的分类名称','',{
+    confirmButtonText: 'OK',
+    cancelButtonText: 'Cancel',
+    inputPattern: 
+    /^[\u4e00-\u9fa5A-Za-z0-9IVXLCDM]{1,10}$/,
+    inputErrorMessage: '分类名称敏感'
+  })
+    .then(({ value }) =>{
+        const getRequestInit = () =>{
+          return {
+            method: "PUT",
+            headers: {
+              'content-type': 'application/json',
+              Authorization: token
+            },
+            body: JSON.stringify({//请求体
+              name:value,
+              id,
+            }),
+            cache: "no-cache",
+            mode:'cors',//跨域
+        }
+      }
 
+      const errorHandle = (result) =>{
+        console.log(result)
+      }
+
+      const successHandle = (result) =>{
+        dataList[index].name = value
+      }
+      useMyFetch("/category/update",getRequestInit,errorHandle,successHandle)
+
+      ElMessage({
+        type: 'success',
+      })
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'Input canceled',
+      })
+    })
 }
-const deleteColumn = ()=>{
-    
+const deleteColumn = () => {
+
 }
 </script>
 
 
 <template>
-    <el-table
-    :data="dataList"
-    :default-sort="{ prop: 'id', order: 'descending' }"
+  <el-table 
+    :data="dataList" 
     style="width: 100%"
-    >
-    <el-table-column prop="id" label="编号" sortable />
-    <el-table-column prop="name" label="分类名称" />
+    :default-sort="{ prop: 'id', order: 'descending' }" 
+  >
+  <el-table-column prop="id" label="编号" sortable />
+  <el-table-column prop="name" label="分类名称" />
 
-    <el-table-column fixed="right" label="操作" width="120">
-        <template #default>
-            <el-button link type="primary" size="small" @click="updateColumn">修改</el-button>
-            <el-button link type="primary" size="small" @click="deleteColumn">删除</el-button>
-        </template>
-    </el-table-column>
+  <el-table-column fixed="right" label="操作" width="120">
+    <template #default="scope">
+      <el-button link type="primary" size="small" @click="updateColumn(scope.row.id,scope.$index)">修改</el-button>
+      <el-button link type="primary" size="small" @click="deleteColumn(scope)">删除</el-button>
+    </template>
+  </el-table-column>
 
-    </el-table>
+  </el-table>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
