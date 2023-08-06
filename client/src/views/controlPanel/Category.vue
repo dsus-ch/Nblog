@@ -78,8 +78,55 @@ const updateColumn = ( id,index ) => {
       })
     })
 }
-const deleteColumn = () => {
 
+const deleteColumn = (id,index) => {
+  const getRequestInit = () =>{
+    return {
+      method: "DELETE",
+      headers: {
+        'content-type': 'application/json',
+        Authorization: token
+      },
+      body: JSON.stringify({//请求体
+        id,
+      }),
+      cache: "no-cache",
+      mode:'cors',//跨域
+  }
+}
+
+  const errorHandle = (result) =>{
+    console.log(result)
+  }
+
+  const successHandle = (result) =>{
+    dataList.splice(index,1)
+  }
+
+  ElMessageBox.confirm(
+    '确认要删除该分类吗?',
+    'Warning',
+    {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+      center: true,
+    }
+  )
+  .then(() => {
+    useMyFetch("/category/update",getRequestInit,errorHandle,successHandle)
+
+    ElMessage({
+      type: 'success',
+      message: 'Delete completed',
+    })
+  })
+  .catch(() => {
+    ElMessage({
+      type: 'info',
+      message: 'Delete canceled',
+    })
+  })
 }
 </script>
 
@@ -96,7 +143,7 @@ const deleteColumn = () => {
   <el-table-column fixed="right" label="操作" width="120">
     <template #default="scope">
       <el-button link type="primary" size="small" @click="updateColumn(scope.row.id,scope.$index)">修改</el-button>
-      <el-button link type="primary" size="small" @click="deleteColumn(scope)">删除</el-button>
+      <el-button link type="primary" size="small" @click="deleteColumn(scope.row.id,scope.$index)">删除</el-button>
     </template>
   </el-table-column>
 
