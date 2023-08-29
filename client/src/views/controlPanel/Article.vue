@@ -1,98 +1,28 @@
 <script setup>
-import { ref } from 'vue'
-import { useMain } from "@/store/main"
-import useMyFetch from '@/hooks/useMyFetch'
-import  RichEdit from "@/components/RichEdit.vue"
+import { ref, inject } from 'vue'
+import { useCategoryStore } from '@/store/category.js'
+import  RichEdit from '@/components/RichEdit.vue'
 
 
-const store = useMain()
+
+const $axios = inject('$axios')
 const token = localStorage.getItem('token')
 const activeName = ref('first')
 const dataList = ref([])
 const title = ref('')
 
-const getArticleList = async () =>{
-  const getRequestInit = () =>{
-    return {
-      method: "GET",
-      headers: {
-        'content-type': 'application/json',
-        Authorization: token,
-      },
-      cache: "no-cache",
-      mode:'cors',//跨域
-    }
-  }
-
-  if(store.categoryList.length == 0){
-    //定死的，不用拆开写
-    await useMyFetch("/category/list",getRequestInit,
-    (result) => {} , 
-    (result) =>{
-      store.changeState(result.body)
-    })
-  }
-
-  const errorHandle = (result) =>{
-
-  }
-
-  const successHandle = (result) =>{
-    dataList.value = result.data.rows
-  }
-
-  await useMyFetch("/blog/search",getRequestInit,errorHandle,successHandle)
-}
-getArticleList()//进入页面执行
-
-
-const updateArticle = () =>{
-  const getRequestInit = () =>{
-    return {
-      method: "PUT",
-      headers: {
-        'content-type': 'application/json',
-        Authorization: token
-      },
-      cache: "no-cache",
-      mode:'cors',//跨域
-    }
-  }
-
-  const errorHandle = (result) =>{
-
-  }
-
-  const successHandle = (result) =>{
-    dataList.value = result.data.rows
-  }
-
-  useMyFetch("/blog/update",getRequestInit,errorHandle,successHandle)
+function getCategory(){
+  return $axios.$get('/category/list')
 }
 
-const deleteArticle = () =>{
-    const getRequestInit = () =>{
-      return {
-        method: "DELETE",
-        headers: {
-          'content-type': 'application/json',
-          Authorization: token
-        },
-        cache: "no-cache",
-        mode:'cors',//跨域
-      }
-  }
-
-  const errorHandle = (result) =>{
-
-  }
-
-  const successHandle = (result) =>{
-    dataList.value = result.data.rows
-  }
-
-  useMyFetch("/blog/delete",getRequestInit,errorHandle,successHandle)
+function getArticle(){
+  return $axios.$get('/blog/search')
 }
+
+Promise.all([getCategory(), getArticle()])
+  .then(results => console.log(results))
+
+
 </script>
 
 

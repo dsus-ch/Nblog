@@ -1,52 +1,52 @@
 const express = require('express')
-const router =express.Router()
+const router = express.Router()
 const jwt = require('jsonwebtoken')
-const  _query = require("../until/DBUtils")
+const _query = require("../until/DBUtils")
 
 
-const admin_sql ={
-    query_all:"SELECT * FROM admin",
-    query:"SELECT * FROM `admin` WHERE `account` = ? AND  `password` = ?",
-    insert:"INSERT INTO admin (account,password) VALUES (?,?)",
-    update:"UPDATE admin SET account = ? WHERE id = ?",
-    delete:"DELETE FROM admin WHERE id = ?"
+const admin_sql = {
+	query_all: "SELECT * FROM admin",
+	query: "SELECT * FROM `admin` WHERE `account` = ? AND  `password` = ?",
+	insert: "INSERT INTO admin (account,password) VALUES (?,?)",
+	update: "UPDATE admin SET account = ? WHERE id = ?",
+	delete: "DELETE FROM admin WHERE id = ?"
 }
 
 const SECRET_KEY = 'CIT_lab_xkt_gw' //生成token的密钥
-router.post('/login',async (req,res)=>{
-    let {account,password} =req.body
-    console.log(req.body)
-    // 动态查询
-    // sql select * from `admin` where `account` = ? and  `password` = ?"
-    const [rows, fields] = await _query(admin_sql.query,[account,password])
-    console.table(rows,fields)
+router.post('/login', async (req, res) => {
+	let { account, password } = req.body
+	console.log(req.body)
+	// 动态查询
+	// sql select * from `admin` where `account` = ? and  `password` = ?"
+	const [rows, fields] = await _query(admin_sql.query, [account, password])
+	console.table(rows, fields)
 
-    
-    if(rows&&Object.keys(rows).length>0){
-        //校验成功生成JWT
 
-        /***
-         * 第一个参数 生成到token中的信息
-         * 第二个参数 密钥
-         * 第三个参数 token的有效时间 60，"2h"，"3d"..
-         */
-        const token = jwt.sign(
-            { user:{ id:rows.id, account:rows.account } },
-            SECRET_KEY,
-            { expiresIn:'3d'}
-        )
+	if (rows && Object.keys(rows).length > 0) {
+		//校验成功生成JWT
 
-        res.send({
-            code:200,
-            msg:"登陆成功！",
-            token
-        })
-    }else{
-        res.send({
-            code:500,
-            msg:"登陆失败!"
-        })
-    }
+		/***
+		 * 第一个参数 生成到token中的信息
+		 * 第二个参数 密钥
+		 * 第三个参数 token的有效时间 60，"2h"，"3d"..
+		 */
+		const token = jwt.sign(
+			{ user: { id: rows.id, account: rows.account } },
+			SECRET_KEY,
+			{ expiresIn: '3d' }
+		)
+
+		res.send({
+			code: 200,
+			msg: "登陆成功！",
+			token
+		})
+	} else {
+		res.send({
+			code: 500,
+			msg: "登陆失败!"
+		})
+	}
 })
 
 module.exports = router

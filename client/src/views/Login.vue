@@ -1,18 +1,18 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, inject} from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
-import useMyFetch from '@/hooks/useMyFetch'
 
 const router = useRouter()
+const $axios = inject('$axios')
 const formSize = ref('default')
 const FormRef = ref()
-const FormData = reactive({
+
+const ruleForm = reactive({
   name: '',
   email: '',
   password: '',
 })
-
 //规则验证
 const rules = reactive({
   name: [
@@ -30,41 +30,26 @@ const rules = reactive({
 })
 
 
-const getRequestInit = () =>{
-  //表单提交数据
-  const data = {
-      account: `${FormData.email}`,
-      password: `${FormData.password}`
-  }
-  return {
+async function getUser() {
+  /**
+ * parm url
+ * parm request config
+ */
+  const response = $axios.post('/admin/login',{
     method: "POST",
-    headers: {
-      'content-type': 'application/json'
-      // "content-type": "application/x-www-form-urlencoded" 字符串形式传输 形如："paw=111&d=xx"
+    date:{
+      account: ruleForm.email,
+      password: ruleForm.password,
     },
-    body: JSON.stringify(data),
-    cache: "no-cache",//禁用缓存
-  }
-}
-
-const errorHandle = (result) =>{
-  ElMessage({
-        message: 'Login Failure Warning.',
-        type: 'warning',
+    headers: {
+        'content-type': 'application/json',
+        // "content-type": "application/x-www-form-urlencoded" 字符串形式传输 形如："paw=111&d=xx"
+      },
   })
-}
 
-const successHandle = (result) =>{
-  ElMessage({
-        message: 'Landing successful.',
-        type: 'success',
-  })
-  //token状态持久化
-  localStorage.setItem('token', 'Bearer ' + result.token)
-  //重定向
-  router.push('/control-panel')
+  console.log(response)
+  // router.push('/control-panel')
 }
-
 
 
 const submitForm = async (formEl) => {
@@ -72,9 +57,7 @@ const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      console.log('submit!')
-      //成功则进行请求
-      useMyFetch("/admin/login",getRequestInit,errorHandle,successHandle)
+      getUser()
     } else {
       console.log('error submit!', fields)
     }
@@ -89,7 +72,6 @@ const resetForm = (formEl) => {
 </script>
 
 
-
 <template>
   <el-card class="login-card" shadow="always">
     <template #header>
@@ -98,37 +80,37 @@ const resetForm = (formEl) => {
       </div>
     </template>
     <div>
-      <el-form ref="FormRef" 
-        :model="FormData" 
+      <el-form ref="FormRef"
         :size="formSize"
-        :rules="rules" 
+        :model="ruleForm"
+        :rules="rules"
+        status-icon
         label-position="left" 
         label-width="120px"
-        status-icon
         >
 
         <el-form-item label="name" prop="name">
-          <el-input v-model="FormData.name"></el-input>
+          <el-input v-model="ruleForm.name"></el-input>
         </el-form-item>
         <el-form-item label="email" prop="email">
-          <el-input v-model="FormData.email"></el-input>
+          <el-input v-model="ruleForm.email"></el-input>
         </el-form-item>
         <el-form-item label="password" prop="password">
-          <el-input v-model="FormData.password"></el-input>
+          <el-input v-model="ruleForm.password"></el-input>
         </el-form-item>
 
 
         <el-form-item>
           <el-button type="primary" :plain="true" @click="submitForm(FormRef)">
-            Create
+            登陆
           </el-button>
-          <el-button @click="resetForm(FormRef)">Reset</el-button>
+          <el-button @click="resetForm(FormRef)">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
   </el-card>
 </template>
-  
+
 <style>
 .login-card {
   width: 600px;

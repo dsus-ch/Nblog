@@ -1,37 +1,10 @@
 <script setup>
 import { reactive } from 'vue'
-import { useMain } from "@/store/main"
-import useMyFetch from '@/hooks/useMyFetch'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 const dataList = reactive([])
-const store = useMain()
 const token = localStorage.getItem('token')
 
-
-const getArticleList = () => {
-  if (store.categoryList.length == 0) {
-    //定死的，不用拆开写
-    useMyFetch("/category/list", () => {
-      return {
-        method: "GET",
-        headers: {
-          'content-type': 'application/json',
-          Authorization: token,
-        },
-        cache: "no-cache",
-        mode: 'cors',
-      }
-    }, (result) => {}, (result) => {
-      store.changeState(result.body)
-    })
-  }
-
-  store.categoryList.forEach( element => {
-    dataList.push(element)
-  })
-}
-getArticleList()//进入页面执行
 
 const updateColumn = ( id,index ) => {
   ElMessageBox.prompt('请输入修改后的分类名称','',{

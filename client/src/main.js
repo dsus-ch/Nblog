@@ -1,23 +1,29 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
-import '@/style.css'
 import App from '@/App.vue'
 import router from '@/commom/index'
+import ElementPlus from 'element-plus'
+import '@/style.css'
+import 'element-plus/dist/index.css'
+import axios from '@/plugins/axiosInstance.js'
 
 
 /**
  * vite
  * vue-router
- * element-ui(plus)
- * fetch(http request)
+ * element-plus(ui)
+ * axios(http request)
  * pinia(state management)
  * wangeditor
  */
-const app = createApp(App)
+
+
+
 const pinia = createPinia()
-app.use(ElementPlus);
-app.use(pinia);
-app.use(router);
-app.mount('#app')
+const app = createApp(App)
+
+app.provide('$axios', axios)
+app.use(router)
+  .use(pinia)
+  .use(ElementPlus)
+  .mount('#app')

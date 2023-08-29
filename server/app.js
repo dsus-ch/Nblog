@@ -1,9 +1,10 @@
 const express = require('express')
-const path = require('path')
 const multer = require('multer')
-const app = express()
+const path = require('path')
 const upload = multer({ dest: "./public/upload/temp"})
 const {expressjwt: jwtParse} = require('express-jwt')
+
+const app = express()
 /**
  * 需要导入模块 pnpm xxx
  * mysql2       数据库驱动
@@ -50,7 +51,7 @@ const server = app.listen(8080, () => {
     console.log(`启动成功： http://localhost:${server.address().port}/`)
 })
 
-//错误处理中间件  TODO 单独写成一个文件，处理各种情况
+//错误处理中间件  TODO 
 app.use(function (err, req, res, next) {
     console.error(err.stack)
     res.status(500).send('Something broke!')

@@ -1,7 +1,6 @@
 <script setup>
 import {
   Menu as IconMenu,
-  Location,
   Setting,
 } from '@element-plus/icons-vue'
 import { ElContainer } from 'element-plus'
@@ -13,7 +12,6 @@ const handleClose = (key, keyPath) => {
   console.log(key, keyPath)
 }
 </script>
-  
 
 <template>
   <div>
@@ -29,19 +27,19 @@ const handleClose = (key, keyPath) => {
         
           <el-sub-menu index="1">
             <template #title>
-              <el-icon><location /></el-icon>
+              <el-icon><setting /></el-icon>
               <span>配置</span>
             </template>
-
             <el-sub-menu index="1-1">
-              <template #title>item one</template>
-              <el-menu-item index="1-1-1">item one to</el-menu-item>
+              <template #title>我的</template>
             </el-sub-menu>
-
+            <el-sub-menu index="1-2">
+              <template #title>设置</template>
+            </el-sub-menu>
           </el-sub-menu>
 
           <el-menu-item index="/article">
-            <el-icon><icon-menu /></el-icon>
+            <el-icon><article /></el-icon>
             <span>文章管理</span>
           </el-menu-item>
 
