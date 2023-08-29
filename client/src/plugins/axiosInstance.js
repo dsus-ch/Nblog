@@ -12,4 +12,16 @@ const axiosInstance = axios.create({
 	timeout: 1000,             
 })
 
+//请求拦截器
+axiosInstance.interceptors.request.use((config) => {
+	console.log(config)
+	return config
+})
+
+//响应拦截器
+axiosInstance.interceptors.response.use((res) => {
+	console.log(res)
+	return res
+})
+
 export default axiosInstance

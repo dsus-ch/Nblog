@@ -1,10 +1,11 @@
 <script setup>
-import { reactive, ref, inject} from 'vue'
+import { reactive, ref} from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { useUserStore} from '@/store/user.js'
 
 const router = useRouter()
-const $axios = inject('$axios')
+const userStore = useUserStore()
 const formSize = ref('default')
 const FormRef = ref()
 
@@ -30,34 +31,13 @@ const rules = reactive({
 })
 
 
-async function getUser() {
-  /**
- * parm url
- * parm request config
- */
-  const response = $axios.post('/admin/login',{
-    method: "POST",
-    date:{
-      account: ruleForm.email,
-      password: ruleForm.password,
-    },
-    headers: {
-        'content-type': 'application/json',
-        // "content-type": "application/x-www-form-urlencoded" 字符串形式传输 形如："paw=111&d=xx"
-      },
-  })
-
-  console.log(response)
-  // router.push('/control-panel')
-}
-
-
 const submitForm = async (formEl) => {
   //逻辑校验
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      getUser()
+      userStore.login()
+      // router.push('/control-panel')
     } else {
       console.log('error submit!', fields)
     }

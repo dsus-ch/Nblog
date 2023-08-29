@@ -1,26 +1,19 @@
 <script setup>
-import { ref, inject } from 'vue'
-import { useCategoryStore } from '@/store/category.js'
+import { onMounted, ref } from 'vue'
+import { useBlogStore } from '@/store/blog'
 import  RichEdit from '@/components/RichEdit.vue'
 
 
-
-const $axios = inject('$axios')
-const token = localStorage.getItem('token')
 const activeName = ref('first')
 const dataList = ref([])
 const title = ref('')
+const blogStore = useBlogStore()
 
-function getCategory(){
-  return $axios.$get('/category/list')
-}
-
-function getArticle(){
-  return $axios.$get('/blog/search')
-}
-
-Promise.all([getCategory(), getArticle()])
+onMounted(() => {
+  Promise.all([blogStore.getAllArticle(), blogStore.getCategory()])
   .then(results => console.log(results))
+
+})
 
 
 </script>

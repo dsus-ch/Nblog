@@ -20,10 +20,14 @@ import axios from '@/plugins/axiosInstance.js'
 
 
 const pinia = createPinia()
-const app = createApp(App)
 
-app.provide('$axios', axios)
-app.use(router)
+// 将axios实例作为pinia的一个属性进行提供
+pinia.use(({ store }) => {
+  store.$axios = axios
+})
+
+const app = createApp(App)
+  .use(router)
   .use(pinia)
   .use(ElementPlus)
   .mount('#app')

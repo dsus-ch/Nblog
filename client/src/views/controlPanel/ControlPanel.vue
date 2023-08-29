@@ -39,7 +39,7 @@ const handleClose = (key, keyPath) => {
           </el-sub-menu>
 
           <el-menu-item index="/article">
-            <el-icon><article /></el-icon>
+            <el-icon><setting /></el-icon>
             <span>文章管理</span>
           </el-menu-item>
 
