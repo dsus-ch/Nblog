@@ -1,10 +1,7 @@
 <script setup>
 import { reactive, ref} from 'vue'
-import { ElMessage } from 'element-plus'
-import { useRouter } from 'vue-router'
-import { useUserStore} from '@/store/user.js'
+import { useUserStore } from '@/store/user.js'
 
-const router = useRouter()
 const userStore = useUserStore()
 const formSize = ref('default')
 const FormRef = ref()
@@ -36,8 +33,7 @@ const submitForm = async (formEl) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      userStore.login()
-      // router.push('/control-panel')
+      userStore.login(ruleForm.email,ruleForm.password)
     } else {
       console.log('error submit!', fields)
     }

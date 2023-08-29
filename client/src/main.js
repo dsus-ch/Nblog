@@ -1,11 +1,11 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import '@/style.css'
+import 'element-plus/dist/index.css'
 import App from '@/App.vue'
 import router from '@/commom/index'
 import ElementPlus from 'element-plus'
-import '@/style.css'
-import 'element-plus/dist/index.css'
-import axios from '@/plugins/axiosInstance.js'
+import axiosPlugin from '@/plugins/axiosInstance.js'
 
 
 /**
@@ -22,9 +22,7 @@ import axios from '@/plugins/axiosInstance.js'
 const pinia = createPinia()
 
 // 将axios实例作为pinia的一个属性进行提供
-pinia.use(({ store }) => {
-  store.$axios = axios
-})
+pinia.use(axiosPlugin)
 
 const app = createApp(App)
   .use(router)

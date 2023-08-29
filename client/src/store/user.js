@@ -1,4 +1,7 @@
 import { defineStore } from "pinia"
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -31,6 +34,6 @@ export const useUserStore = defineStore('user', {
 
     logout(){
 
-    }
+    },
   }
 })
