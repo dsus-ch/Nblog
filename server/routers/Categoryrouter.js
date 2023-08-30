@@ -12,14 +12,14 @@ const category_sql ={
     query_all:"SELECT * FROM category",
     query:"SELECT * FROM category WHERE name = ?",
     insert:"INSERT INTO category (id,name) VALUES(?,?)",
-    update:"UPDATE category SET name = ? WHERE id = ?",
+    updata:"UPdata category SET name = ? WHERE id = ?",
     delete:"DELETE FROM category WHERE id = ?"
 }
 //需要注意 插入、更新、删除语句的返回值是不可迭代对象，我们可以用受影响的行来统计
 
 /**
  * 接口列表
- * @date 2023-04-09
+ * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
@@ -44,7 +44,7 @@ router.get('/list',async (req,res)=>{
 
 /**
  * 添加接口
- * @date 2023-04-09
+ * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
@@ -78,13 +78,13 @@ router.post('/add',async (req,res)=>{
 
 /**
  * 更新接口
- * @date 2023-04-09
+ * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.put('/update',async (req,res)=>{
+router.put('/updata',async (req,res)=>{
     const {name,id} = req.body
-    const result = await _query(category_sql.update,[name,id])
+    const result = await _query(category_sql.updata,[name,id])
     if(result.affectedRows>0){//没有变动代表更新不成功
         res.send({
             code:200,
@@ -102,7 +102,7 @@ router.put('/update',async (req,res)=>{
 
 /**
  * 删除接口
- * @date 2023-04-09
+ * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */

@@ -188,7 +188,7 @@ class Genid {
     }
 
     GetCurrentTimeTick() {
-        const millis = BigInt((new Date()).valueOf());
+        const millis = BigInt((new data()).valueOf());
         return millis - this.BaseTime;
     }
 

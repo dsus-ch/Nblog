@@ -8,14 +8,13 @@ const admin_sql = {
 	query_all: "SELECT * FROM admin",
 	query: "SELECT * FROM `admin` WHERE `account` = ? AND  `password` = ?",
 	insert: "INSERT INTO admin (account,password) VALUES (?,?)",
-	update: "UPDATE admin SET account = ? WHERE id = ?",
+	updata: "UPdata admin SET account = ? WHERE id = ?",
 	delete: "DELETE FROM admin WHERE id = ?"
 }
 
 const SECRET_KEY = 'CIT_lab_xkt_gw' //生成token的密钥
 router.post('/login', async (req, res) => {
-	let { account, password } = req.body
-	console.log(req.body)
+	let { account, password } = req.body.data
 	// 动态查询
 	// sql select * from `admin` where `account` = ? and  `password` = ?"
 	const [rows, fields] = await _query(admin_sql.query, [account, password])

@@ -1,8 +1,13 @@
 <script setup>
 import { reactive, ref} from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user.js'
+import { useGeneralStore } from '../store/general';
 
+const router = useRouter()
 const userStore = useUserStore()
+const generalStore = useGeneralStore()
+
 const formSize = ref('default')
 const FormRef = ref()
 
@@ -15,7 +20,7 @@ const ruleForm = reactive({
 const rules = reactive({
   name: [
     { required: true, message: 'Please input Activity name', trigger: 'blur' },
-    { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
+    { min: 3, max: 8, message: '昵称长度不超过8个字符', trigger: 'blur' },
   ],
   email: [
     { required: true, message: 'Please select Activity zone', trigger: 'blur' },
@@ -31,9 +36,10 @@ const rules = reactive({
 const submitForm = async (formEl) => {
   //逻辑校验
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate(async (valid, fields) => {
     if (valid) {
-      userStore.login(ruleForm.email,ruleForm.password)
+      await userStore.login(ruleForm.email,ruleForm.password)
+      router.push(generalStore.nextPage)
     } else {
       console.log('error submit!', fields)
     }

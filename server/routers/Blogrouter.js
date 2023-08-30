@@ -11,14 +11,14 @@ const blog_sql = {
 	query_all: "SELECT * FROM  blog",
 	query: "SELECT COUNT(*) FROM blog",
 	insert: "INSERT INTO blog (id,category_id,title,content,create_time) VALUES(?,?,?,?,?)",
-	update: "UPDATE blog SET category_id = ?,title = ?,content = ? WHERE id = ?",
+	updata: "UPdata blog SET category_id = ?,title = ?,content = ? WHERE id = ?",
 	delete: "DELETE FROM blog WHERE id = ?"
 }
 //需要注意 插入、更新、删除语句的返回值是不可迭代对象，我们可以用受影响的行来统计
 
 /**
  * 查询博客
- * @date 2023-04-09
+ * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
@@ -99,7 +99,7 @@ router.get('/search', async (req, res) => {
 
 /**
  * 添加博客
- * @date 2023-04-09
+ * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
@@ -107,7 +107,7 @@ router.get('/search', async (req, res) => {
 router.post('/add', async (req, res) => {
 	const { category_id, title, content } = req.body
 	let id = genid.NextId()
-	let create_time = new Date().getTime()
+	let create_time = new data().getTime()
 	const result = await _query(blog_sql.insert, [id, category_id, title, content, create_time])
 
 	if (result.affectedRows > 0) {
@@ -127,13 +127,13 @@ router.post('/add', async (req, res) => {
 
 /**
  * 更新博客
- * @date 2023-04-09
+ * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.put('/update', async (req, res) => {
+router.put('/updata', async (req, res) => {
 	const { id, title, category_id, content } = req.body
-	const result = await _query(blog_sql.update, [category_id, title, content, id])
+	const result = await _query(blog_sql.updata, [category_id, title, content, id])
 	if (result.affectedRows > 0) {//没有变动代表更新不成功
 		res.send({
 			code: 200,
@@ -151,7 +151,7 @@ router.put('/update', async (req, res) => {
 
 /**
  * 删除博客
- * @date 2023-04-09
+ * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */

@@ -29,7 +29,7 @@ const blogStore = useBlogStore()
 
   <el-table-column fixed="right" label="操作" width="120">
     <template #default="scope">
-      <el-button link type="primary" size="small" @click="updateColumn(scope.row.id,scope.$index)">修改</el-button>
+      <el-button link type="primary" size="small" @click="updataColumn(scope.row.id,scope.$index)">修改</el-button>
       <el-button link type="primary" size="small" @click="deleteColumn(scope.row.id,scope.$index)">删除</el-button>
     </template>
   </el-table-column>

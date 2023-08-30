@@ -15,7 +15,7 @@ export const useBlogStore = defineStore('blog', {
       const res =  this.$axios.get('/blog/search')
       console.log(res)
     },
-    updateArticle(){
+    updataArticle(){
 
     },
     delectArticle(){
@@ -28,7 +28,7 @@ export const useBlogStore = defineStore('blog', {
       const res = this.$axios.get('/category/list')
       console.log(res)
     },
-    updateCategory(){
+    updataCategory(){
 
     },
     delectCategory(){

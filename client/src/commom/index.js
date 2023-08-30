@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router"
 import { ElMessage } from 'element-plus'
 
 const routes = [
@@ -28,7 +28,8 @@ const router = createRouter({
 
 //导航守卫，在导航触发（页面还未加载的时候调用）
 router.beforeEach((to, from) => {
-  const token = localStorage.getItem('token')
+  const token = JSON.parse(localStorage.getItem('user')).token
+  
   if (
     // 检查用户是否已登录
     !token &&
