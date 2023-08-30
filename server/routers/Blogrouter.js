@@ -18,7 +18,6 @@ const blog_sql = {
 
 /**
  * 查询博客
- * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
@@ -99,7 +98,6 @@ router.get('/search', async (req, res) => {
 
 /**
  * 添加博客
- * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
@@ -127,7 +125,6 @@ router.post('/add', async (req, res) => {
 
 /**
  * 更新博客
- * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
@@ -151,7 +148,6 @@ router.put('/updata', async (req, res) => {
 
 /**
  * 删除博客
- * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */

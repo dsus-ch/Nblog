@@ -2,7 +2,7 @@
 import { reactive, ref} from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/user.js'
-import { useGeneralStore } from '../store/general';
+import { useGeneralStore } from '@/store/general';
 
 const router = useRouter()
 const userStore = useUserStore()

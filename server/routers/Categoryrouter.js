@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const  _query = require("../until/DBUtils")
+const _query = require("../until/DBUtils")
 const GenId = require("../until/idgenerator")
 //雪花id
 const genid = new GenId({ WorkerId: 1 })
@@ -8,119 +8,115 @@ const genid = new GenId({ WorkerId: 1 })
 
 
 
-const category_sql ={
-    query_all:"SELECT * FROM category",
-    query:"SELECT * FROM category WHERE name = ?",
-    insert:"INSERT INTO category (id,name) VALUES(?,?)",
-    updata:"UPdata category SET name = ? WHERE id = ?",
-    delete:"DELETE FROM category WHERE id = ?"
+const category_sql = {
+	query_all: "SELECT * FROM category",
+	query: "SELECT * FROM category WHERE name = ?",
+	insert: "INSERT INTO category (id,name) VALUES(?,?)",
+	updata: "UPdata category SET name = ? WHERE id = ?",
+	delete: "DELETE FROM category WHERE id = ?"
 }
 //需要注意 插入、更新、删除语句的返回值是不可迭代对象，我们可以用受影响的行来统计
 
 /**
  * 接口列表
- * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.get('/list',async (req,res)=>{
-    const body =  await _query(category_sql.query_all,[])
-    const [rows,fields] = body//TODO rows为什么只有一条数据
-    if(rows&&Object.keys(rows).length>0){
-        res.send({
-            code:200,
-            msg:"查询成功！",
-            body//body:body
-        })
-    }else{
-        res.send({
-            code:500,
-            msg:"查询失败！",
-        })
-    }
+router.get('/list', async (req, res) => {
+	const body = await _query(category_sql.query_all, [])
+	const [rows, fields] = body//TODO rows为什么只有一条数据
+	if (rows && Object.keys(rows).length > 0) {
+		res.send({
+			code: 200,
+			msg: "查询成功！",
+			body//body:body
+		})
+	} else {
+		res.send({
+			code: 500,
+			msg: "查询失败！",
+		})
+	}
 })
 
 
 
 /**
  * 添加接口
- * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.post('/add',async (req,res)=>{
-    const {name} = req.body
-    //判断有没有重复的name
-    const [rows, fields] =await _query(category_sql.query,[name])
-    if(rows&&Object.keys(rows).length>0){
-        console.log("该分类存在!")
-        res.send({
-            code:500,
-            msg:"添加失败！",
-        })
-    }else{
-        const result = await _query(category_sql.insert,[genid.NextId(),name])
-        if(result.affectedRows>0){
-            res.send({
-                code:200,
-                msg:"添加成功！",
-            })
-        }else{
-            res.send({
-                code:500,
-                msg:"添加失败！",
-            })
-        }
-    }
-    
+router.post('/add', async (req, res) => {
+	const { name } = req.body
+	//判断有没有重复的name
+	const [rows, fields] = await _query(category_sql.query, [name])
+	if (rows && Object.keys(rows).length > 0) {
+		console.log("该分类存在!")
+		res.send({
+			code: 500,
+			msg: "添加失败！",
+		})
+	} else {
+		const result = await _query(category_sql.insert, [genid.NextId(), name])
+		if (result.affectedRows > 0) {
+			res.send({
+				code: 200,
+				msg: "添加成功！",
+			})
+		} else {
+			res.send({
+				code: 500,
+				msg: "添加失败！",
+			})
+		}
+	}
+
 })
 
 
 /**
  * 更新接口
- * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.put('/updata',async (req,res)=>{
-    const {name,id} = req.body
-    const result = await _query(category_sql.updata,[name,id])
-    if(result.affectedRows>0){//没有变动代表更新不成功
-        res.send({
-            code:200,
-            msg:"更新成功！",
-        })
-    }else{
-        res.send({
-            code:500,
-            msg:"更新失败！",
-        })
-    }
-    
+router.put('/updata', async (req, res) => {
+	const { name, id } = req.body
+	const result = await _query(category_sql.updata, [name, id])
+	if (result.affectedRows > 0) {//没有变动代表更新不成功
+		res.send({
+			code: 200,
+			msg: "更新成功！",
+		})
+	} else {
+		res.send({
+			code: 500,
+			msg: "更新失败！",
+		})
+	}
+
 })
 
 
 /**
  * 删除接口
- * @data 2023-04-09
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.delete('/delete',async (req,res)=>{
-    const id = req.query.id
-    const result = await _query(category_sql.delete,[id])
+router.delete('/delete', async (req, res) => {
+	const id = req.query.id
+	const result = await _query(category_sql.delete, [id])
 
-    if(result.affectedRows>0){//删除失败则 affectedRows 为 0
-        res.send({
-            code:200,
-            msg:"删除成功！",
-        })
-    }else{
-        res.send({
-            code:500,
-            msg:"删除失败！",
-        })
-    }
-    
+	if (result.affectedRows > 0) {//删除失败则 affectedRows 为 0
+		res.send({
+			code: 200,
+			msg: "删除成功！",
+		})
+	} else {
+		res.send({
+			code: 500,
+			msg: "删除失败！",
+		})
+	}
+
 })
 module.exports = router

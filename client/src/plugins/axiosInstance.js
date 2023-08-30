@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { getTokenFromLocalStorage as getToken } from '@/tools/convert.js'
 
 // TODO
 // 1. 公共拦截器，处理各种错误400，501..
@@ -24,7 +25,7 @@ axiosInstance.interceptors.request.use((config) => {
 		return config
 	}
 
-	const token = localStorage.getItem('token')
+	const token = getToken()
 	if(token){
 		// 验证令牌
 		config.headers.Authorization = `Bearer ${token}`

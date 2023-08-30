@@ -13,6 +13,13 @@ const admin_sql = {
 }
 
 const SECRET_KEY = 'CIT_lab_xkt_gw' //生成token的密钥
+
+
+/**
+ * 登陆
+ * @param {String} 邮箱
+ * @param {String} 密码 
+ */
 router.post('/login', async (req, res) => {
 	let { account, password } = req.body.data
 	// 动态查询
