@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useRoute } from 'vue-router'
+import { ElMessage } from 'element-plus'
 
 // TODO
 // 1. 公共拦截器，处理各种错误400，501..
@@ -23,18 +24,23 @@ axiosInstance.interceptors.request.use((config) => {
 		return config
 	}
 
-	const {token} = localStorage.getItem('token')
+	const token = localStorage.getItem('token')
 	if(token){
+		// 验证令牌
 		config.headers.Authorization = `Bearer ${token}`
 	}else{
-		console.log('没有token')
+		// 抛出异常 需要登陆
 	}
 	return config
 })
 
 //响应拦截器
 axiosInstance.interceptors.response.use((response) => {
-	console.log(res)
+	const type = response.data.code === 200 ? 'success' : 'waring'
+	ElMessage({
+		message: response.data.msg,
+		type: type,
+	})
 	return response
 })
 
