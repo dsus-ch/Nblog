@@ -1,4 +1,13 @@
-TODO 
+# 前台
+
+## 技术架构
+- vue3
+- pinia
+- axios
+- vite
+- element-plus
+
+## TODO 
 1. 全部替换为axios
 2. 把公共逻辑、拦截器抽离到axiosInstance里面
 3. 把请求逻辑放入pinia
