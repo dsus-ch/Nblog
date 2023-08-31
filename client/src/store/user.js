@@ -14,7 +14,7 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     async login(email,password){
-      const { data } =  await this.$axios.post('/admin/login',{
+      const { data } =  await this.$axios.post('/api/login',{
         data:{
           account: email,
           password: password,

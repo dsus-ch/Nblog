@@ -1,5 +1,3 @@
-const express = require('express')
-const router = express.Router()
 const jwt = require('jsonwebtoken')
 const _query = require("../until/DBUtils")
 
@@ -12,7 +10,7 @@ const admin_sql = {
 	delete: "DELETE FROM admin WHERE id = ?"
 }
 
-const SECRET_KEY = 'CIT_lab_xkt_gw' //生成token的密钥
+const SECRET_KEY = 'dsus,blog' //生成token的密钥
 
 
 /**
@@ -20,8 +18,9 @@ const SECRET_KEY = 'CIT_lab_xkt_gw' //生成token的密钥
  * @param {String} 邮箱
  * @param {String} 密码 
  */
-router.post('/login', async (req, res) => {
-	let { account, password } = req.body.data
+
+async function login(req, res){ //传入的是router的req和res
+	let { account, password } = req.body
 	// 动态查询
 	// sql select * from `admin` where `account` = ? and  `password` = ?"
 	const [rows, fields] = await _query(admin_sql.query, [account, password])
@@ -53,6 +52,9 @@ router.post('/login', async (req, res) => {
 			msg: "登陆失败!"
 		})
 	}
-})
+}
 
-module.exports = router
+
+module.exports = {
+	login,
+}

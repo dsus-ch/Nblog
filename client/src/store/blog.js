@@ -12,7 +12,7 @@ export const useBlogStore = defineStore('blog', {
   },
   actions: {
     getAllArticle(){
-      const res =  this.$axios.get('/blog/search')
+      const res =  this.$axios.get('/api/search')
       console.log(res)
     },
     updataArticle(){
@@ -25,7 +25,7 @@ export const useBlogStore = defineStore('blog', {
       //提供文章id，分类名称、作者
     },
     getCategory(){
-      const res = this.$axios.get('/category/list')
+      const res = this.$axios.get('/api/search-category')
       console.log(res)
     },
     updataCategory(){

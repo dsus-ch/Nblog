@@ -1,28 +1,26 @@
-const express = require('express')
-const router = express.Router()
 const _query = require("../until/DBUtils")
 const GenId = require("../until/idgenerator")
-//雪花id
-const genid = new GenId({ WorkerId: 1 })
+const genid = new GenId({ WorkerId: 1 }) //雪花id生成器
 
 
 
 const blog_sql = {
 	query_all: "SELECT * FROM  blog",
-	query: "SELECT COUNT(*) FROM blog",
+	query: 	"SELECT COUNT(*) FROM blog",
 	insert: "INSERT INTO blog (id,category_id,title,content,create_time) VALUES(?,?,?,?,?)",
-	updata: "UPdata blog SET category_id = ?,title = ?,content = ? WHERE id = ?",
+	updata: "UPDATE blog SET category_id = ?,title = ?,content = ? WHERE id = ?",
 	delete: "DELETE FROM blog WHERE id = ?"
 }
 //需要注意 插入、更新、删除语句的返回值是不可迭代对象，我们可以用受影响的行来统计
+
+
 
 /**
  * 查询博客
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.get('/search', async (req, res) => {
-
+async function searchAllArticle(req, res) {
 	/**
 	 * keyword —— 模糊查询
 	 * category_id —— 查询一类文章
@@ -91,8 +89,7 @@ router.get('/search', async (req, res) => {
 			msg: "查询失败！",
 		})
 	}
-
-})
+}
 
 
 
@@ -101,8 +98,7 @@ router.get('/search', async (req, res) => {
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-
-router.post('/add', async (req, res) => {
+async function addArticle(req, res){
 	const { category_id, title, content } = req.body
 	let id = genid.NextId()
 	let create_time = new data().getTime()
@@ -119,8 +115,7 @@ router.post('/add', async (req, res) => {
 			msg: "添加失败！",
 		})
 	}
-
-})
+}
 
 
 /**
@@ -128,7 +123,7 @@ router.post('/add', async (req, res) => {
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.put('/updata', async (req, res) => {
+async function updateArticle(req, res){
 	const { id, title, category_id, content } = req.body
 	const result = await _query(blog_sql.updata, [category_id, title, content, id])
 	if (result.affectedRows > 0) {//没有变动代表更新不成功
@@ -142,8 +137,7 @@ router.put('/updata', async (req, res) => {
 			msg: "更新失败！",
 		})
 	}
-
-})
+}
 
 
 /**
@@ -151,7 +145,7 @@ router.put('/updata', async (req, res) => {
  * @param {String} 接口路径
  * @param {Function} 函数 
  */
-router.delete('/delete', async (req, res) => {
+async function deleteArticle(req, res){
 	const id = req.query.id
 	const result = await _query(blog_sql.delete, [id])
 
@@ -166,6 +160,12 @@ router.delete('/delete', async (req, res) => {
 			msg: "删除失败！",
 		})
 	}
+}
 
-})
-module.exports = router
+
+module.exports = {
+	searchAllArticle,
+	addArticle,
+	updateArticle,
+	deleteArticle,
+}
