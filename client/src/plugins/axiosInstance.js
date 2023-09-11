@@ -22,15 +22,15 @@ axiosInstance.interceptors.request.use((config) => {
 		return config
 	}
 
-	const token = lfI.getItem('token')
-
-	if(token){
-		// 验证令牌
-		config.headers.Authorization = `Bearer ${token}`
-	}else{
-		// 抛出异常 需要登陆
-		
-	}
+	lfI.getItem('token').then((value) => {
+		if(value){
+			// 验证令牌
+			config.headers.Authorization = `Bearer ${token}`
+		}else{
+			// 抛出异常 需要登陆
+			
+		}
+	})
 	return config
 })
 

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
 import { useGeneralStore } from "./general"
+import { localforageInstance as lfI } from '@/plugins/localforageInstance'
 
 export const useUserStore = defineStore('user', {
   state: () => {
@@ -15,22 +16,18 @@ export const useUserStore = defineStore('user', {
   actions: {
     async login(email,password){
       const { data } =  await this.$axios.post('/api/login',{
-        data:{
-          account: email,
-          password: password,
-        },
-        headers: {
-            'content-type': 'application/json',
-            // "content-type": "application/x-www-form-urlencoded" 字符串形式传输 形如："paw=111&d=xx"
-          },
+        account: email,
+        password: password,
       })
       
-      // if(data.code === 200){
-      //   const generalStore = useGeneralStore()
+      if(data.code === 200){
+        const generalStore = useGeneralStore()
 
-      //   this.token = data.token
-      //   generalStore.nextPage = '/control-panel'
-      // }
+        const token = data.token
+        lfI.setItem('token',token)
+        this.token = token
+        generalStore.nextPage = '/control-panel'
+      }
     },
 
     async register(){
@@ -46,6 +43,4 @@ export const useUserStore = defineStore('user', {
       generalStore.token = '/login'
     },
   },
-
-  persist: true,
 })

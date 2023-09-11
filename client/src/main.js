@@ -6,7 +6,7 @@ import App from '@/App.vue'
 import router from '@/commom/index'
 import ElementPlus from 'element-plus'
 import axiosPlugin from '@/plugins/axiosInstance.js'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
 
 /**
  * vite
@@ -19,13 +19,9 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
  */
 
 
-
 const pinia = createPinia()
-
-// 将axios实例作为pinia的一个属性进行提供
+// 将axios注入pinia
 pinia.use(axiosPlugin)
-// 持久化插件
-pinia.use(piniaPluginPersistedstate)
 
 const app = createApp(App)
   .use(router)

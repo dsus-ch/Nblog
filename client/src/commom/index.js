@@ -29,21 +29,21 @@ const router = createRouter({
 
 //导航守卫，在导航触发（页面还未加载的时候调用）
 router.beforeEach((to, from) => {
-  const token = lfI.getItem('token')
-  
-  if (
-    // 检查用户是否已登录
-    !token &&
-    // ❗️ 避免无限重定向
-    to.path != '/login'
-  ){
-    ElMessage({
-      message: '请先登陆！',
-      type: 'warning',
-    })
-    // 将用户重定向到登录页面
-    return '/login'
-  }
+  lfI.getItem('token').then((value) => {
+    if (
+      // 检查用户是否已登录
+      !value &&
+      // ❗️ 避免无限重定向
+      to.path != '/login'
+    ){
+      ElMessage({
+        message: '请先登陆！',
+        type: 'warning',
+      })
+      // 将用户重定向到登录页面
+      return '/login'
+    }
+  })
 })
 
 export default router
