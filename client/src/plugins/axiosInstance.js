@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-import { localforageInstance as lfI } from '@/plugin/localforageInstance'
+import { localforageInstance as lfI } from '@/plugins/localforageInstance'
 
 // TODO
 // 1. 公共拦截器，处理各种错误400，501..
@@ -23,11 +23,13 @@ axiosInstance.interceptors.request.use((config) => {
 	}
 
 	const token = lfI.getItem('token')
+
 	if(token){
 		// 验证令牌
 		config.headers.Authorization = `Bearer ${token}`
 	}else{
 		// 抛出异常 需要登陆
+		
 	}
 	return config
 })

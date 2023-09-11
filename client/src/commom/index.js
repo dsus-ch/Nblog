@@ -1,6 +1,6 @@
 import { ElMessage } from 'element-plus'
 import { createRouter, createWebHashHistory } from "vue-router"
-import { localforageInstance as lfI } from '@/plugin/localforageInstance'
+import { localforageInstance as lfI } from '@/plugins/localforageInstance'
 
 const routes = [
   { 

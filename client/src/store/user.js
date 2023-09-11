@@ -25,12 +25,12 @@ export const useUserStore = defineStore('user', {
           },
       })
       
-      if(data.code === 200){
-        const generalStore = useGeneralStore()
+      // if(data.code === 200){
+      //   const generalStore = useGeneralStore()
 
-        this.token = data.token
-        generalStore.nextPage = '/control-panel'
-      }
+      //   this.token = data.token
+      //   generalStore.nextPage = '/control-panel'
+      // }
     },
 
     async register(){
