@@ -8,13 +8,13 @@ import ElementPlus from 'element-plus'
 import axiosPlugin from '@/plugins/axiosInstance.js'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
-
 /**
  * vite
  * vue-router
  * element-plus(ui)
  * axios(http request)
  * pinia(state management)
+ * localforage
  * wangeditor
  */
 

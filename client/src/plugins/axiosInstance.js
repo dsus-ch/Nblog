@@ -1,14 +1,11 @@
 import axios from 'axios'
-import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { getTokenFromLocalStorage as getToken } from '@/tools/convert.js'
+import { localforageInstance as lfI } from '@/plugin/localforageInstance'
 
 // TODO
 // 1. 公共拦截器，处理各种错误400，501..
 // 2. 剥离重复配置
 // 3. 请求缓冲区，减少重复请求
-
-const router = useRoute()
 
 const axiosInstance = axios.create({
 	baseURL:'http://localhost:8080',
@@ -25,7 +22,7 @@ axiosInstance.interceptors.request.use((config) => {
 		return config
 	}
 
-	const token = getToken()
+	const token = lfI.getItem('token')
 	if(token){
 		// 验证令牌
 		config.headers.Authorization = `Bearer ${token}`

@@ -6,11 +6,11 @@ import {
 import { ElContainer } from 'element-plus'
 
 const handleOpen = (key, keyPath) => {
-  console.log(key, keyPath)
+
 }
 const handleClose = (key, keyPath) => {
-  console.log(key, keyPath)
 }
+
 </script>
 
 <template>

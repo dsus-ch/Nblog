@@ -1,6 +1,6 @@
-import { createRouter, createWebHashHistory } from "vue-router"
 import { ElMessage } from 'element-plus'
-import { getTokenFromLocalStorage as getToken } from '@/tools/convert.js'
+import { createRouter, createWebHashHistory } from "vue-router"
+import { localforageInstance as lfI } from '@/plugin/localforageInstance'
 
 const routes = [
   { 
@@ -29,7 +29,7 @@ const router = createRouter({
 
 //导航守卫，在导航触发（页面还未加载的时候调用）
 router.beforeEach((to, from) => {
-  const token = getToken()
+  const token = lfI.getItem('token')
   
   if (
     // 检查用户是否已登录
