@@ -1,26 +1,31 @@
 <script setup>
-import { reactive } from 'vue'
 import { useBlogStore } from '@/store/blog'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 
-const dataList = reactive([])
+
 const blogStore = useBlogStore()
 
 
-//弹窗
-// ElMessageBox.prompt('请输入修改后的分类名称','',{
-//     confirmButtonText: 'OK',
-//     cancelButtonText: 'Cancel',
-//     inputPattern: 
-//     /^[\u4e00-\u9fa5A-Za-z0-9IVXLCDM]{1,10}$/,
-//     inputErrorMessage: '分类名称敏感'
-//   }
+const updataColumn = (id, index) =>{
+  ElMessageBox.prompt('请输入修改后的分类名称','',{
+    confirmButtonText: 'OK',
+    cancelButtonText: 'Cancel',
+    inputPattern: 
+    /^[\u4e00-\u9fa5A-Za-z0-9IVXLCDM]{1,10}$/,
+    inputErrorMessage: '分类名称敏感'
+  })
+  blogStore.updataCategory()
+}
+
+const deleteColumn = (id, index) =>{
+  blogStore.deleteCategory()
+}
 </script>
 
 
 <template>
   <el-table 
-    :data="dataList" 
+    :data="blogStore.categoryList" 
     style="width: 100%"
     :default-sort="{ prop: 'id', order: 'descending' }" 
   >

@@ -20,7 +20,7 @@ const category_sql = {
  */
 async function searchAllCategory(req, res){
 	const body = await _query(category_sql.query_all, [])
-	const [rows, fields] = body//TODO rows为什么只有一条数据
+	const [rows, fields] = body
 	if (rows && Object.keys(rows).length > 0) {
 		res.send({
 			code: 200,

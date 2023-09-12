@@ -18,7 +18,7 @@ const app = express()
 //跨域请求
 app.use(function(req, res, next){
     res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5173');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); //OPTIONS是预检查
     res.header('Access-Control-Allow-Headers', '*');
     res.header('Access-Control-Allow-Credentials', 'true');
     next()

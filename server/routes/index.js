@@ -7,6 +7,10 @@ const router = express.Router() // 注册路由
 const userRouter = require('./user')
 const blogRouter = require('./blog')
 
+//注入路由模块
+router.use('/api', userRouter)
+router.use('/api', blogRouter)
+
 //解析JWT
 const SECRET_KEY = 'dsus,blog'
 router.use(
@@ -15,10 +19,6 @@ router.use(
       algorithms: ["HS256"], // 使用何种加密算法解析
   }).unless({path: ['/api/login','/'] }) //检验时排除的页面
 )
-
-//注入路由模块
-router.use('/api', userRouter)
-router.use('/api', blogRouter)
 
 // 自定义统一异常处理中间件
 router.use((err, req, res, next) => {

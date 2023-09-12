@@ -8,8 +8,8 @@ import { localforageInstance as lfI } from '@/plugins/localforageInstance'
 // 3. 请求缓冲区，减少重复请求
 
 const axiosInstance = axios.create({
-	baseURL:'http://localhost:8080',
-	timeout: 1000,             
+	baseURL: 'http://localhost:8080',           
+	timeout: 1000,  
 })
 
 //不需要token验证的url
@@ -18,14 +18,16 @@ const excludedUrls = ['login','register']
 //请求拦截器
 axiosInstance.interceptors.request.use((config) => {
 	const { url } = config
-	if(!excludedUrls.some((excludedUrl) => url.includes(excludedUrl))) {
+	if(excludedUrls.some(() =>{
+		excludedUrl => new RegExp(excludedUrl).test(url)
+	})) {
 		return config
 	}
 
 	lfI.getItem('token').then((value) => {
 		if(value){
 			// 验证令牌
-			config.headers.Authorization = `Bearer ${token}`
+			config.headers.Authorization = `Bearer ${value}`
 		}else{
 			// 抛出异常 需要登陆
 			
@@ -41,6 +43,7 @@ axiosInstance.interceptors.response.use((response) => {
 		message: response.data.msg,
 		type: type,
 	})
+
 	return response
 })
 

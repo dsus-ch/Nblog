@@ -3,7 +3,7 @@ import { defineStore } from "pinia"
 export const useBlogStore = defineStore('blog', {
   state: () => {
     return {
-      article:[],
+      articleList:[],
       categoryList:[],
     }
   },
@@ -11,27 +11,27 @@ export const useBlogStore = defineStore('blog', {
     
   },
   actions: {
-    getAllArticle(){
-      const res =  this.$axios.get('/api/search')
-      console.log(res)
+    async getAllArticle(){
+      const { data } = await this.$axios.post('/api/search')
+      this.articleList = data.data.rows
     },
-    updataArticle(){
+    async updataArticle(){
 
     },
-    delectArticle(){
+    async delectArticle(){
 
     },
-    searchArticleByCondition(){
+    async searchArticleByCondition(){
       //提供文章id，分类名称、作者
     },
-    getCategory(){
-      const res = this.$axios.get('/api/search-category')
-      console.log(res)
+    async getCategory(){
+      const { data } = await this.$axios.post('/api/search-category')
+      this.categoryList = data.body
     },
-    updataCategory(){
+    async updataCategory(){
 
     },
-    delectCategory(){
+    async delectCategory(){
 
     },
   }
