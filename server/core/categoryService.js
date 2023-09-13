@@ -7,7 +7,7 @@ const category_sql = {
 	query_all: "SELECT * FROM category",
 	query: "SELECT * FROM category WHERE name = ?",
 	insert: "INSERT INTO category (id,name) VALUES(?,?)",
-	UPDATE: "UPDATE category SET name = ? WHERE id = ?",
+	update: "UPDATE category SET name = ? WHERE id = ?",
 	delete: "DELETE FROM category WHERE id = ?"
 }
 //需要注意 插入、更新、删除语句的返回值是不可迭代对象，我们可以用受影响的行来统计
@@ -75,7 +75,7 @@ async function addCategory(req, res){
  */
 async function updateCategory(req, res){
 	const { name, id } = req.body
-	const result = await _query(category_sql.UPDATE, [name, id])
+	const result = await _query(category_sql.update, [name, id])
 	if (result.affectedRows > 0) {//没有变动代表更新不成功
 		res.send({
 			code: 200,

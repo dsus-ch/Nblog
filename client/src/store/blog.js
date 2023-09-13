@@ -15,7 +15,7 @@ export const useBlogStore = defineStore('blog', {
       const { data } = await this.$axios.post('/api/search')
       this.articleList = data.data.rows
     },
-    async UPDATEArticle(){
+    async updateArticle(){
 
     },
     async deleteArticle(){
