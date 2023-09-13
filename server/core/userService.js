@@ -6,7 +6,7 @@ const admin_sql = {
 	query_all: "SELECT * FROM admin",
 	query: "SELECT * FROM `admin` WHERE `account` = ? AND  `password` = ?",
 	insert: "INSERT INTO admin (account,password) VALUES (?,?)",
-	updata: "UPdata admin SET account = ? WHERE id = ?",
+	UPDATE: "UPDATE admin SET account = ? WHERE id = ?",
 	delete: "DELETE FROM admin WHERE id = ?"
 }
 

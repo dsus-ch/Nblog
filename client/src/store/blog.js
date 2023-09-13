@@ -15,10 +15,10 @@ export const useBlogStore = defineStore('blog', {
       const { data } = await this.$axios.post('/api/search')
       this.articleList = data.data.rows
     },
-    async updataArticle(){
+    async UPDATEArticle(){
 
     },
-    async delectArticle(){
+    async deleteArticle(){
 
     },
     async searchArticleByCondition(){
@@ -28,11 +28,18 @@ export const useBlogStore = defineStore('blog', {
       const { data } = await this.$axios.post('/api/search-category')
       this.categoryList = data.body
     },
-    async updataCategory(){
+    async updateCategory(index,body){
+      const { data } = await this.$axios.put('api/update-category', body)
+      if(data.code === 200){
+        this.categoryList[index] = body.name
+      }
 
     },
-    async delectCategory(){
-
+    async deleteCategory(index, id){
+      const { data } = await this.$axios.delete('api/delete-category', { params: { id } })
+      if(data.code === 200){
+        this.categoryList.splice(index,1)
+      }
     },
   }
 })
