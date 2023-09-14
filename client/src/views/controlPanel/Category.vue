@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useBlogStore } from '@/store/blog'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessageBox } from 'element-plus'
 
 const search = ref('')
 const blogStore = useBlogStore()
@@ -28,15 +28,15 @@ const handleEdit = (index, row) =>{
 }
 
 const handleDelete = (index, row) =>{
-  blogStore.deleteCategory(index,row.id)
+  blogStore.deleteCategory(index, row.id)
 }
 </script>
 
 
 <template>
   <el-table 
-    :data="filterTableData" 
     style="width: 100%"
+    :data="filterTableData" 
     :default-sort="{ prop: 'id', order: 'descending' }" 
   >
   <el-table-column prop="id" label="编号" sortable />

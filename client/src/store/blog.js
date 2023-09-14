@@ -28,17 +28,21 @@ export const useBlogStore = defineStore('blog', {
       const { data } = await this.$axios.post('/api/search-category')
       this.categoryList = data.body
     },
-    async updateCategory(index,body){
-      const { data } = await this.$axios.put('api/update-category', body)
+    async updateCategory(index, newRow){
+      // index与数组是不对应的，但是我们可以知道内容在表格的位置
+      const { data } = await this.$axios.put('api/update-category', newRow)
       if(data.code === 200){
-        this.categoryList[index] = body.name
+        this.categoryList.forEach((value, index, array) =>{
+          if(value.id === newRow.id) array[index] = newRow
+        })
       }
-
     },
     async deleteCategory(index, id){
       const { data } = await this.$axios.delete('api/delete-category', { params: { id } })
       if(data.code === 200){
-        this.categoryList.splice(index,1)
+        this.categoryList.forEach((value, index, array) => {
+          if(value.id == id) array.splice(index,1)
+        })
       }
     },
   }
