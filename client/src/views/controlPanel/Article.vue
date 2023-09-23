@@ -37,7 +37,7 @@ onMounted(() => {
       <el-descriptions-item label="time">{{ item.create_time }}</el-descriptions-item>
       <el-descriptions-item label="id">{{ item.id }}</el-descriptions-item>
     </el-descriptions>
-    <div class="article-item-content">{{ item.content }}</div>
+    <div class="article-item-content"><p v-html="item.content"></p></div>
   </div>
 
   </el-tab-pane>

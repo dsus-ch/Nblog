@@ -99,7 +99,7 @@ async function searchAllArticle(req, res) {
 async function addArticle(req, res){
 	const { category_id, title, content } = req.body
 	let id = genid.NextId()
-	let create_time = new data().getTime()
+	let create_time = (new Date()).getTime()
 	const result = await _query(blog_sql.insert, [id, category_id, title, content, create_time])
 
 	if (result.affectedRows > 0) {
